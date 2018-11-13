@@ -19,8 +19,6 @@ import org.springframework.dao.PermissionDeniedDataAccessException;
 import org.springframework.stereotype.Component;
 
 import ci.smile.colloque.dao.entity.Colloque;
-import ci.smile.colloque.dao.entity.Exposer;
-import ci.smile.colloque.dao.entity.Institution;
 import ci.smile.colloque.dao.entity.Organisateur;
 import ci.smile.colloque.dao.entity.Participant;
 import ci.smile.colloque.dao.repository.ColloqueRepository;
@@ -33,9 +31,7 @@ import ci.smile.colloque.helper.Validate;
 import ci.smile.colloque.helper.contract.IBasicBusiness;
 import ci.smile.colloque.helper.contract.Request;
 import ci.smile.colloque.helper.contract.Response;
-import ci.smile.colloque.helper.dto.InscriptionDto;
 import ci.smile.colloque.helper.dto.OrganisateurDto;
-import ci.smile.colloque.helper.dto.PresentationDto;
 import ci.smile.colloque.helper.dto.transformer.OrganisateurTransformer;
 
 @Component
@@ -585,215 +581,215 @@ public class OrganisateurBusiness implements IBasicBusiness<Request<Organisateur
 	  
 	  
 	  
-	  public Response<OrganisateurDto> createOrganisateur(Request<OrganisateurDto> request, Locale locale){
-		  
-		  
-			
-			
-		    //--------------------------------------------------- 
-			// 
-			// POUR LA CREATION DE INSCRIPTION
-			//
-			//--------------------------------------------------------------
-			//RECUPERER LES DTO LA REQUETE ET LES METTRE DANS InscriptionDto 
-			//--------------------------------------------------------------
-			
-		   
-			Request<InscriptionDto> requestInscription= new Request<>() ;
-			
-		  
-		  try {
-
-				List<InscriptionDto> itemsInscritption = new ArrayList<>();
-				
-				
-				PresentationDto presentationDto = new PresentationDto();
-			  
-			  for( OrganisateurDto dto : request.getDatas()) {
-					//----------------------------------
-					//CHAMPS OBLIGATOIRE DU PARTICIPANT
-					//----------------------------------
-					Map<String, Object> fieldsToVerify= new HashMap<>();					
-				
-						//---------------------------------------------
-						//CHAMP INSCRIPTION OBLIGATOIRE
-						//---------------------------------------------
-					
-					fieldsToVerify.put("colloqueName",dto.getInscriptionDto().getColloqueName());
-					fieldsToVerify.put("nom",dto.getInscriptionDto().getParticipantDto().getNom());
-					fieldsToVerify.put("numeroDeParticipation",dto.getInscriptionDto().getParticipantDto().getNumeroDeParticipation());
-					fieldsToVerify.put("nom", dto.getInscriptionDto().getColloqueName());
-					
-					//--------------------
-					// EXPOSER OBLIGATOIRE
-					//--------------------
-					fieldsToVerify.put("titre", dto.getExposer().getTitre());
-
-					
-					// The map is now in function fieldToVerify
-					
-					if (!Validate.RequiredValue(fieldsToVerify).isGood() ) {
-						response.setHasError(true);
-						response.setStatus(functionalError.FIELD_EMPTY(Validate.getValidate().getField(), locale));
-						return response;
-					}
-					
-					//---------------------
-					// EXISTING INSTITUTION
-					//---------------------
-					
-					Institution existingInstitution=null;
-					 existingInstitution = institutionRepository.findByNom(dto.getInstitutionName()) ;
-				
-					if( existingInstitution == null  ) {
-						
-						response.setHasError(true);
-						response.setStatus(functionalError.DATA_NOT_EXIST(" L'institution n'existe pas "
-								+ " dans la base de donnée ", locale));
-					}
-
-					//-----------------
-					// EXISTING EXPOSER
-					//-----------------
-					
-					Exposer existingExposer=null;
-					existingExposer = exposerRepository.findByTitre(dto.getExposer().getTitre()) ;
-				
-					if( existingExposer == null  ) {
-						
-						response.setHasError(true);
-						response.setStatus(functionalError.DATA_NOT_EXIST(" L'Exposer n'existe pas "
-								+ " dans la base de donnée ", locale));
-					}
-					
-					itemsInstitutionId.add(existingExposer.getId());
-					itemsEposerId.add(existingInstitution.getId());
-					itemsInscritption.add(dto.getInscriptionDto());		
-					
-				
-				  
-			  }
-			  
-			  
-			  	//------------------------------------------------------
-				//CREATION DES INSCRIPTIONS
-				//------------------------------------------------------
-				
-				if(
-				   !itemsInscritption.isEmpty() && itemsInscritption !=null &&		
-				   !itemsInstitutionId.isEmpty() && itemsInstitutionId != null &&			   
-				   !itemsEposerId.isEmpty() && itemsEposerId != null
-				   ) {
-					
-					requestInscription.setDatas(itemsInscritption);
-					Response<InscriptionDto> responseInscriptionDto = inscriptionBusiness.createInscrit(requestInscription, locale);
-				 
-			if ( responseInscriptionDto.getItems() != null 
-					&&  !responseInscriptionDto.getItems().isEmpty() ) {
-				
-			
-				List<OrganisateurDto> itemsOrganisateurDto = new ArrayList<>();
-				
-				for (OrganisateurDto dto : request.getDatas()) {
-				
-					//---------------------------------
-					// RECUPERER LES Id DU PARTICIPANT
-					// ET LES Id DU COLLOQUE
-				    //---------------------------------
-					
-					Institution existingInstitution=null;
-					Participant existingParticipant=null;
-					Colloque 	existingColloque=null;
-					Exposer 	existingExposer= null;
-					
-					existingColloque = colloqueRepository.findByNom(dto.getInscriptionDto().getColloqueName()) ;
-					existingExposer = exposerRepository.findByTitre(dto.getExposer().getTitre()) ;
-
-					
-					existingInstitution = institutionRepository.findByNom(dto.getInstitutionName()) ;
-					existingParticipant= participantRepository.findByNumPar(dto.getInscriptionDto().getParticipantDto().getNumeroDeParticipation());
-				
-					if( existingInstitution == null || existingParticipant ==null ||
-						existingColloque == null || existingExposer == null) {
-						
-						response.setHasError(true);
-						response.setStatus(functionalError.DATA_NOT_EXIST(" Le colloque n'existe pas "
-								+ " dans la base de donnée ", locale));
-					}
-					
-					//-------------------------------------------------
-					// PAR DEFAUT LE PARTICIPANT N'EST PAS ORGANISATEUR
-					//-------------------------------------------------
-					dto.setOrganisateur(false);
-					
-					dto.setInstitutionId(existingInstitution.getId()); 
-					dto.setParticipantId(existingParticipant.getId());
-					presentationDto.setOrganisateurId(existingParticipant.getId());
-					itemsOrganisateurDto.add(dto);
-					
-					//--------------------------------------
-					// AJOUT DES ELEMENTS DE LA PRESENTATION
-					//--------------------------------------
-					presentationDto.setColloqueId(existingColloque.getId());
-					presentationDto.setExposerId(existingExposer.getId());
-					
-					presentationDto.setResumer(existingExposer.getResumer());
-						
-					
-					itemsPresenation.add(presentationDto);
-					
-					}
-				//-----------------------------------------
-				//CREATE Organisateur 
-				//------------------------------------------
-				
-				
-				
-				if(!itemsOrganisateurDto.isEmpty() && itemsOrganisateurDto!= null) {
-				request= new Request<>();
-				request.setDatas(itemsOrganisateurDto);	
-				Response<OrganisateurDto> responseOrganisateurDto = create(request, locale);
-				
-				
-				if ( responseOrganisateurDto.getItems() != null ||
-						!responseOrganisateurDto.getItems().isEmpty()) {
-				
-				 requestPresentation= new Request<>();
-				 requestPresentation.setDatas(itemsPresenation);;
-				 presentationBusiness.create(requestPresentation, locale);
-			
-				}
-				
-				}
-				
-				response.setHasError(false);
-				response.setStatus(functionalError.SUCCESS("Created Organisateur", locale));
-				response.setItems(itemsOrganisateurDto);					
-			
-			}
-			}		  			  
-			  
-		  }
-		  
-		  catch (PermissionDeniedDataAccessException e) {
-		      exceptionUtils.PERMISSION_DENIED_DATA_ACCESS_EXCEPTION(response, locale, e);
-		    } catch (DataAccessResourceFailureException e) {
-		      exceptionUtils.DATA_ACCESS_RESOURCE_FAILURE_EXCEPTION(response, locale, e);
-		    } catch (DataAccessException e) {
-		      exceptionUtils.DATA_ACCESS_EXCEPTION(response, locale, e);
-		    } catch (RuntimeException e) {
-		      exceptionUtils.RUNTIME_EXCEPTION(response, locale, e);
-		    } catch (Exception e) {
-		      exceptionUtils.EXCEPTION(response, locale, e);
-		    } finally {
-		      if (response.isHasError() && response.getStatus() != null) {
-		        slf4jLogger.info("Erreur| code: {} -  message: {}", response.getStatus().getCode(), response.getStatus().getMessage());
-		        throw new RuntimeException(response.getStatus().getCode() + ";" + response.getStatus().getMessage());
-		      }
-		    }
-		  
-		  
-		  return response;
-	  }
+//	  public Response<OrganisateurDto> createOrganisateur(Request<OrganisateurDto> request, Locale locale){
+//		  
+//		  
+//			
+//			
+//		    //--------------------------------------------------- 
+//			// 
+//			// POUR LA CREATION DE INSCRIPTION
+//			//
+//			//--------------------------------------------------------------
+//			//RECUPERER LES DTO LA REQUETE ET LES METTRE DANS InscriptionDto 
+//			//--------------------------------------------------------------
+//			
+//		   
+//			Request<InscriptionDto> requestInscription= new Request<>() ;
+//			
+//		  
+//		  try {
+//
+//				List<InscriptionDto> itemsInscritption = new ArrayList<>();
+//				
+//				
+//				PresentationDto presentationDto = new PresentationDto();
+//			  
+//			  for( OrganisateurDto dto : request.getDatas()) {
+//					//----------------------------------
+//					//CHAMPS OBLIGATOIRE DU PARTICIPANT
+//					//----------------------------------
+//					Map<String, Object> fieldsToVerify= new HashMap<>();						
+//				
+//						//---------------------------------------------
+//						//CHAMP INSCRIPTION OBLIGATOIRE
+//						//---------------------------------------------
+//					
+//					fieldsToVerify.put("colloqueName",dto.getInscriptionDto().getColloqueName());
+//					fieldsToVerify.put("nom",dto.getInscriptionDto().getParticipantDto().getNom());
+//					fieldsToVerify.put("numeroDeParticipation",dto.getInscriptionDto().getParticipantDto().getNumeroDeParticipation());
+//					fieldsToVerify.put("nom", dto.getInscriptionDto().getColloqueName());
+//					
+//					//--------------------
+//					// EXPOSER OBLIGATOIRE
+//					//--------------------
+//					fieldsToVerify.put("titre", dto.getExposer().getTitre());
+//
+//					
+//					// The map is now in function fieldToVerify
+//					
+//					if (!Validate.RequiredValue(fieldsToVerify).isGood() ) {
+//						response.setHasError(true);
+//						response.setStatus(functionalError.FIELD_EMPTY(Validate.getValidate().getField(), locale));
+//						return response;
+//					}
+//					
+//					//---------------------
+//					// EXISTING INSTITUTION
+//					//---------------------
+//					
+//					Institution existingInstitution=null;
+//					 existingInstitution = institutionRepository.findByNom(dto.getInstitutionName()) ;
+//				
+//					if( existingInstitution == null  ) {
+//						
+//						response.setHasError(true);
+//						response.setStatus(functionalError.DATA_NOT_EXIST(" L'institution n'existe pas "
+//								+ " dans la base de donnée ", locale));
+//					}
+//
+//					//-----------------
+//					// EXISTING EXPOSER
+//					//-----------------
+//					
+//					Exposer existingExposer=null;
+//					existingExposer = exposerRepository.findByTitre(dto.getExposer().getTitre()) ;
+//				
+//					if( existingExposer == null  ) {
+//						
+//						response.setHasError(true);
+//						response.setStatus(functionalError.DATA_NOT_EXIST(" L'Exposer n'existe pas "
+//								+ " dans la base de donnée ", locale));
+//					}
+//					
+//					itemsInstitutionId.add(existingExposer.getId());
+//					itemsEposerId.add(existingInstitution.getId());
+//					itemsInscritption.add(dto.getInscriptionDto());		
+//					
+//				
+//				  
+//			  }
+//			  
+//			  
+//			  	//------------------------------------------------------
+//				//CREATION DES INSCRIPTIONS
+//				//------------------------------------------------------
+//				
+//				if(
+//				   !itemsInscritption.isEmpty() && itemsInscritption !=null &&		
+//				   !itemsInstitutionId.isEmpty() && itemsInstitutionId != null &&			   
+//				   !itemsEposerId.isEmpty() && itemsEposerId != null
+//				   ) {
+//					
+//					requestInscription.setDatas(itemsInscritption);
+//					Response<InscriptionDto> responseInscriptionDto = inscriptionBusiness.createInscrit(requestInscription, locale);
+//				 
+//			if ( responseInscriptionDto.getItems() != null 
+//					&&  !responseInscriptionDto.getItems().isEmpty() ) {
+//				
+//			
+//				List<OrganisateurDto> itemsOrganisateurDto = new ArrayList<>();
+//				
+//				for (OrganisateurDto dto : request.getDatas()) {
+//				
+//					//---------------------------------
+//					// RECUPERER LES Id DU PARTICIPANT
+//					// ET LES Id DU COLLOQUE
+//				    //---------------------------------
+//					
+//					Institution existingInstitution=null;
+//					Participant existingParticipant=null;
+//					Colloque 	existingColloque=null;
+//					Exposer 	existingExposer= null;
+//					
+//					existingColloque = colloqueRepository.findByNom(dto.getInscriptionDto().getColloqueName()) ;
+//					existingExposer = exposerRepository.findByTitre(dto.getExposer().getTitre()) ;
+//
+//					
+//					existingInstitution = institutionRepository.findByNom(dto.getInstitutionName()) ;
+//					existingParticipant= participantRepository.findByNumPar(dto.getInscriptionDto().getParticipantDto().getNumeroDeParticipation());
+//				
+//					if( existingInstitution == null || existingParticipant ==null ||
+//						existingColloque == null || existingExposer == null) {
+//						
+//						response.setHasError(true);
+//						response.setStatus(functionalError.DATA_NOT_EXIST(" Le colloque n'existe pas "
+//								+ " dans la base de donnée ", locale));
+//					}
+//					
+//					//-------------------------------------------------
+//					// PAR DEFAUT LE PARTICIPANT N'EST PAS ORGANISATEUR
+//					//-------------------------------------------------
+//					dto.setOrganisateur(false);
+//					
+//					dto.setInstitutionId(existingInstitution.getId()); 
+//					dto.setParticipantId(existingParticipant.getId());
+//					presentationDto.setOrganisateurId(existingParticipant.getId());
+//					itemsOrganisateurDto.add(dto);
+//					
+//					//--------------------------------------
+//					// AJOUT DES ELEMENTS DE LA PRESENTATION
+//					//--------------------------------------
+//					presentationDto.setColloqueId(existingColloque.getId());
+//					presentationDto.setExposerId(existingExposer.getId());
+//					
+//					presentationDto.setResumer(existingExposer.getResumer());
+//						
+//					
+//					itemsPresenation.add(presentationDto);
+//					
+//					}
+//				//-----------------------------------------
+//				//CREATE Organisateur 
+//				//------------------------------------------
+//				
+//				
+//				
+//				if(!itemsOrganisateurDto.isEmpty() && itemsOrganisateurDto!= null) {
+//				request= new Request<>();
+//				request.setDatas(itemsOrganisateurDto);	
+//				Response<OrganisateurDto> responseOrganisateurDto = create(request, locale);
+//				
+//				
+//				if ( responseOrganisateurDto.getItems() != null ||
+//						!responseOrganisateurDto.getItems().isEmpty()) {
+//				
+//				 requestPresentation= new Request<>();
+//				 requestPresentation.setDatas(itemsPresenation);;
+//				 presentationBusiness.create(requestPresentation, locale);
+//			
+//				}
+//				
+//				}
+//				
+//				response.setHasError(false);
+//				response.setStatus(functionalError.SUCCESS("Created Organisateur", locale));
+//				response.setItems(itemsOrganisateurDto);					
+//			
+//			}
+//			}		  			  
+//			  
+//		  }
+//		  
+//		  catch (PermissionDeniedDataAccessException e) {
+//		      exceptionUtils.PERMISSION_DENIED_DATA_ACCESS_EXCEPTION(response, locale, e);
+//		    } catch (DataAccessResourceFailureException e) {
+//		      exceptionUtils.DATA_ACCESS_RESOURCE_FAILURE_EXCEPTION(response, locale, e);
+//		    } catch (DataAccessException e) {
+//		      exceptionUtils.DATA_ACCESS_EXCEPTION(response, locale, e);
+//		    } catch (RuntimeException e) {
+//		      exceptionUtils.RUNTIME_EXCEPTION(response, locale, e);
+//		    } catch (Exception e) {
+//		      exceptionUtils.EXCEPTION(response, locale, e);
+//		    } finally {
+//		      if (response.isHasError() && response.getStatus() != null) {
+//		        slf4jLogger.info("Erreur| code: {} -  message: {}", response.getStatus().getCode(), response.getStatus().getMessage());
+//		        throw new RuntimeException(response.getStatus().getCode() + ";" + response.getStatus().getMessage());
+//		      }
+//		    }
+//		  
+//		  
+//		  return response;
+//	  }
 
 }
