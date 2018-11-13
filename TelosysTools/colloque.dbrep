@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Telosys Database Repository --><root>
+<tableList databaseId="0" databaseName="colloque" databaseProductName="MySQL" generation="2018-10-29 11:40:08">
+<table catalog="colloque" databaseType="TABLE" javaBean="Colloque" name="colloque" schema="">
+<column dbAutoIncremented="true" dbComment="" dbDefaultValue="" dbName="id" dbNotNull="true" dbPosition="1" dbPrimaryKey="true" dbSize="10" dbTypeName="INT" inputType="number" javaName="id" javaType="java.lang.Integer" jdbcTypeCode="4" label="Id" notNull="true" selected="true"/>
+<column dbComment="" dbDefaultValue="" dbName="nom" dbNotNull="true" dbPosition="2" dbSize="255" dbTypeName="VARCHAR" inputType="text" javaName="nom" javaType="java.lang.String" jdbcTypeCode="12" label="Nom" maxLength="255" notEmpty="true" notNull="true" selected="true"/>
+<column dateType="D" dbComment="" dbDefaultValue="" dbName="date" dbNotNull="true" dbPosition="3" dbSize="10" dbTypeName="DATE" inputType="date" javaName="date" javaType="java.util.Date" jdbcTypeCode="91" label="Date" notNull="true" selected="true"/>
+<column dbComment="" dbDefaultValue="" dbForeignKey="true" dbName="universite_id" dbNotNull="true" dbPosition="4" dbSize="10" dbTypeName="INT" inputType="number" javaName="universiteId" javaType="java.lang.Integer" jdbcTypeCode="4" label="Universite id" notNull="true" selected="true"/>
+<fk name="fk_colloque_universite">
+<fkcol colname="universite_id" colref="id" deferrable="7" deleterule="3" sequence="1" tablename="colloque" tableref="universite" updaterule="3"/>
+</fk>
+<link cardinality="OneToMany" cascade="" fetch="DEFAULT" foreignKeyName="fk_inscription_colloque" id="LINK_FK_fk_inscription_colloque_I" inverseSideOf="LINK_FK_fk_inscription_colloque_O" javaName="listOfInscription" javaType="java.util.List" joinTableName="" mappedBy="colloque" optional="UNDEFINED" owningSide="false" sourceTableName="colloque" targetEntity="Inscription" targetTableName="inscription" used="true"/>
+<link cardinality="ManyToOne" cascade="" fetch="DEFAULT" foreignKeyName="fk_colloque_universite" id="LINK_FK_fk_colloque_universite_O" inverseSideOf="" javaName="universite" javaType="Universite" joinTableName="" mappedBy="" optional="UNDEFINED" owningSide="true" sourceTableName="colloque" targetEntity="Universite" targetTableName="universite" used="true">
+<joinColumns>
+<joinColumn insertable="false" name="universite_id" nullable="true" referencedColumnName="id" unique="false" updatable="false"/>
+</joinColumns>
+</link>
+<link cardinality="OneToMany" cascade="" fetch="DEFAULT" foreignKeyName="fk_organisateur_colloque" id="LINK_FK_fk_organisateur_colloque_I" inverseSideOf="LINK_FK_fk_organisateur_colloque_O" javaName="listOfOrganisateur" javaType="java.util.List" joinTableName="" mappedBy="colloque" optional="UNDEFINED" owningSide="false" sourceTableName="colloque" targetEntity="Organisateur" targetTableName="organisateur" used="true"/>
+<link cardinality="OneToMany" cascade="" fetch="DEFAULT" foreignKeyName="fk_conf_expo_coll-colloque" id="LINK_FK_fk_conf_expo_coll-colloque_I" inverseSideOf="LINK_FK_fk_conf_expo_coll-colloque_O" javaName="listOfPresentation" javaType="java.util.List" joinTableName="" mappedBy="colloque" optional="UNDEFINED" owningSide="false" sourceTableName="colloque" targetEntity="Presentation" targetTableName="presentation" used="true"/>
+</table>
+<table catalog="colloque" databaseType="TABLE" javaBean="Conferencier" name="conferencier" schema="">
+<column dbComment="" dbDefaultValue="" dbForeignKey="true" dbName="participant_id" dbNotNull="true" dbPosition="1" dbPrimaryKey="true" dbSize="10" dbTypeName="INT" inputType="number" javaName="participantId" javaType="java.lang.Integer" jdbcTypeCode="4" label="Participant id" notNull="true" selected="true"/>
+<column dbComment="" dbDefaultValue="" dbForeignKey="true" dbName="institution_id" dbNotNull="true" dbPosition="2" dbSize="10" dbTypeName="INT" inputType="number" javaName="institutionId" javaType="java.lang.Integer" jdbcTypeCode="4" label="Institution id" notNull="true" selected="true"/>
+<column dbComment="" dbDefaultValue="" dbName="organisateur" dbNotNull="false" dbPosition="3" dbSize="11" dbTypeName="BIT" inputType="checkbox" javaName="organisateur" javaType="java.lang.Boolean" jdbcTypeCode="-7" label="Organisateur" notNull="false" selected="true"/>
+<fk name="fk_conferencier_institution">
+<fkcol colname="institution_id" colref="id" deferrable="7" deleterule="3" sequence="1" tablename="conferencier" tableref="institution" updaterule="3"/>
+</fk>
+<fk name="fk_conferencier_participant">
+<fkcol colname="participant_id" colref="id" deferrable="7" deleterule="3" sequence="1" tablename="conferencier" tableref="participant" updaterule="3"/>
+</fk>
+<link cardinality="OneToMany" cascade="" fetch="DEFAULT" foreignKeyName="fk_conf_expo_coll-conferencier" id="LINK_FK_fk_conf_expo_coll-conferencier_I" inverseSideOf="LINK_FK_fk_conf_expo_coll-conferencier_O" javaName="listOfPresentation" javaType="java.util.List" joinTableName="" mappedBy="conferencier" optional="UNDEFINED" owningSide="false" sourceTableName="conferencier" targetEntity="Presentation" targetTableName="presentation" used="true"/>
+<link cardinality="ManyToOne" cascade="" fetch="DEFAULT" foreignKeyName="fk_conferencier_participant" id="LINK_FK_fk_conferencier_participant_O" inverseSideOf="" javaName="participant" javaType="Participant" joinTableName="" mappedBy="" optional="UNDEFINED" owningSide="true" sourceTableName="conferencier" targetEntity="Participant" targetTableName="participant" used="true">
+<joinColumns>
+<joinColumn insertable="false" name="participant_id" nullable="true" referencedColumnName="id" unique="false" updatable="false"/>
+</joinColumns>
+</link>
+<link cardinality="ManyToOne" cascade="" fetch="DEFAULT" foreignKeyName="fk_conferencier_institution" id="LINK_FK_fk_conferencier_institution_O" inverseSideOf="" javaName="institution" javaType="Institution" joinTableName="" mappedBy="" optional="UNDEFINED" owningSide="true" sourceTableName="conferencier" targetEntity="Institution" targetTableName="institution" used="true">
+<joinColumns>
+<joinColumn insertable="false" name="institution_id" nullable="true" referencedColumnName="id" unique="false" updatable="false"/>
+</joinColumns>
+</link>
+</table>
+<table catalog="colloque" databaseType="TABLE" javaBean="Exposer" name="exposer" schema="">
+<column dbAutoIncremented="true" dbComment="" dbDefaultValue="" dbName="id" dbNotNull="true" dbPosition="1" dbPrimaryKey="true" dbSize="10" dbTypeName="INT" inputType="number" javaName="id" javaType="java.lang.Integer" jdbcTypeCode="4" label="Id" notNull="true" selected="true"/>
+<column dbComment="" dbDefaultValue="" dbName="titre" dbNotNull="true" dbPosition="2" dbSize="255" dbTypeName="VARCHAR" inputType="text" javaName="titre" javaType="java.lang.String" jdbcTypeCode="12" label="Titre" maxLength="255" notEmpty="true" notNull="true" selected="true"/>
+<column dbComment="" dbDefaultValue="" dbName="resumer" dbNotNull="true" dbPosition="3" dbSize="255" dbTypeName="VARCHAR" inputType="text" javaName="resumer" javaType="java.lang.String" jdbcTypeCode="12" label="Resumer" maxLength="255" notEmpty="true" notNull="true" selected="true"/>
+<link cardinality="OneToMany" cascade="" fetch="DEFAULT" foreignKeyName="fk_conf_expo_coll-exposer" id="LINK_FK_fk_conf_expo_coll-exposer_I" inverseSideOf="LINK_FK_fk_conf_expo_coll-exposer_O" javaName="listOfPresentation" javaType="java.util.List" joinTableName="" mappedBy="exposer" optional="UNDEFINED" owningSide="false" sourceTableName="exposer" targetEntity="Presentation" targetTableName="presentation" used="true"/>
+</table>
+<table catalog="colloque" databaseType="TABLE" javaBean="Inscription" name="inscription" schema="">
+<column dbAutoIncremented="true" dbComment="" dbDefaultValue="" dbName="Id" dbNotNull="true" dbPosition="1" dbPrimaryKey="true" dbSize="10" dbTypeName="INT" inputType="number" javaName="id" javaType="java.lang.Integer" jdbcTypeCode="4" label="Id" notNull="true" selected="true"/>
+<column dateType="D" dbComment="" dbDefaultValue="" dbName="date" dbNotNull="true" dbPosition="2" dbSize="10" dbTypeName="DATE" inputType="date" javaName="date" javaType="java.util.Date" jdbcTypeCode="91" label="Date" notNull="true" selected="true"/>
+<column dbComment="" dbDefaultValue="" dbName="numero_inscription" dbNotNull="true" dbPosition="3" dbSize="255" dbTypeName="VARCHAR" inputType="text" javaName="numeroInscription" javaType="java.lang.String" jdbcTypeCode="12" label="Numero inscription" maxLength="255" notEmpty="true" notNull="true" selected="true"/>
+<column dbComment="" dbDefaultValue="" dbForeignKey="true" dbName="participant_id" dbNotNull="true" dbPosition="4" dbSize="10" dbTypeName="INT" inputType="number" javaName="participantId" javaType="java.lang.Integer" jdbcTypeCode="4" label="Participant id" notNull="true" selected="true"/>
+<column dbComment="" dbDefaultValue="" dbName="presence" dbNotNull="false" dbPosition="5" dbSize="1" dbTypeName="BIT" inputType="checkbox" javaName="presence" javaType="java.lang.Boolean" jdbcTypeCode="-7" label="Presence" notNull="false" selected="true"/>
+<column dbComment="" dbDefaultValue="" dbForeignKey="true" dbName="colloque_id" dbNotNull="true" dbPosition="6" dbSize="10" dbTypeName="INT" inputType="number" javaName="colloqueId" javaType="java.lang.Integer" jdbcTypeCode="4" label="Colloque id" notNull="true" selected="true"/>
+<fk name="fk_inscription_colloque">
+<fkcol colname="colloque_id" colref="id" deferrable="7" deleterule="3" sequence="1" tablename="inscription" tableref="colloque" updaterule="3"/>
+</fk>
+<fk name="fk_inscription_participant">
+<fkcol colname="participant_id" colref="id" deferrable="7" deleterule="3" sequence="1" tablename="inscription" tableref="participant" updaterule="3"/>
+</fk>
+<link cardinality="ManyToOne" cascade="" fetch="DEFAULT" foreignKeyName="fk_inscription_participant" id="LINK_FK_fk_inscription_participant_O" inverseSideOf="" javaName="participant" javaType="Participant" joinTableName="" mappedBy="" optional="UNDEFINED" owningSide="true" sourceTableName="inscription" targetEntity="Participant" targetTableName="participant" used="true">
+<joinColumns>
+<joinColumn insertable="false" name="participant_id" nullable="true" referencedColumnName="id" unique="false" updatable="false"/>
+</joinColumns>
+</link>
+<link cardinality="ManyToOne" cascade="" fetch="DEFAULT" foreignKeyName="fk_inscription_colloque" id="LINK_FK_fk_inscription_colloque_O" inverseSideOf="" javaName="colloque" javaType="Colloque" joinTableName="" mappedBy="" optional="UNDEFINED" owningSide="true" sourceTableName="inscription" targetEntity="Colloque" targetTableName="colloque" used="true">
+<joinColumns>
+<joinColumn insertable="false" name="colloque_id" nullable="true" referencedColumnName="id" unique="false" updatable="false"/>
+</joinColumns>
+</link>
+</table>
+<table catalog="colloque" databaseType="TABLE" javaBean="Institution" name="institution" schema="">
+<column dbAutoIncremented="true" dbComment="" dbDefaultValue="" dbName="id" dbNotNull="true" dbPosition="1" dbPrimaryKey="true" dbSize="10" dbTypeName="INT" inputType="number" javaName="id" javaType="java.lang.Integer" jdbcTypeCode="4" label="Id" notNull="true" selected="true"/>
+<column dbComment="" dbDefaultValue="" dbName="nom" dbNotNull="true" dbPosition="2" dbSize="255" dbTypeName="VARCHAR" inputType="text" javaName="nom" javaType="java.lang.String" jdbcTypeCode="12" label="Nom" maxLength="255" notEmpty="true" notNull="true" selected="true"/>
+<link cardinality="OneToMany" cascade="" fetch="DEFAULT" foreignKeyName="fk_conferencier_institution" id="LINK_FK_fk_conferencier_institution_I" inverseSideOf="LINK_FK_fk_conferencier_institution_O" javaName="listOfConferencier" javaType="java.util.List" joinTableName="" mappedBy="institution" optional="UNDEFINED" owningSide="false" sourceTableName="institution" targetEntity="Conferencier" targetTableName="conferencier" used="true"/>
+</table>
+<table catalog="colloque" databaseType="TABLE" javaBean="Organisateur" name="organisateur" schema="">
+<column dbAutoIncremented="true" dbComment="" dbDefaultValue="" dbName="id" dbNotNull="true" dbPosition="1" dbPrimaryKey="true" dbSize="10" dbTypeName="INT" inputType="number" javaName="id" javaType="java.lang.Integer" jdbcTypeCode="4" label="Id" notNull="true" selected="true"/>
+<column dbComment="" dbDefaultValue="" dbName="numero_de_telephone" dbNotNull="true" dbPosition="2" dbSize="255" dbTypeName="VARCHAR" inputType="text" javaName="numeroDeTelephone" javaType="java.lang.String" jdbcTypeCode="12" label="Numero de telephone" maxLength="255" notEmpty="true" notNull="true" selected="true"/>
+<column dbComment="" dbDefaultValue="" dbForeignKey="true" dbName="participant_id" dbNotNull="true" dbPosition="3" dbSize="10" dbTypeName="INT" inputType="number" javaName="participantId" javaType="java.lang.Integer" jdbcTypeCode="4" label="Participant id" notNull="true" selected="true"/>
+<column dbComment="" dbDefaultValue="" dbForeignKey="true" dbName="colloque_id" dbNotNull="false" dbPosition="4" dbSize="10" dbTypeName="INT" inputType="number" javaName="colloqueId" javaType="java.lang.Integer" jdbcTypeCode="4" label="Colloque id" notNull="false" selected="true"/>
+<fk name="fk_organisateur_colloque">
+<fkcol colname="colloque_id" colref="id" deferrable="7" deleterule="3" sequence="1" tablename="organisateur" tableref="colloque" updaterule="3"/>
+</fk>
+<fk name="fk_organisateur_participant">
+<fkcol colname="participant_id" colref="id" deferrable="7" deleterule="3" sequence="1" tablename="organisateur" tableref="participant" updaterule="3"/>
+</fk>
+<link cardinality="ManyToOne" cascade="" fetch="DEFAULT" foreignKeyName="fk_organisateur_participant" id="LINK_FK_fk_organisateur_participant_O" inverseSideOf="" javaName="participant" javaType="Participant" joinTableName="" mappedBy="" optional="UNDEFINED" owningSide="true" sourceTableName="organisateur" targetEntity="Participant" targetTableName="participant" used="true">
+<joinColumns>
+<joinColumn insertable="false" name="participant_id" nullable="true" referencedColumnName="id" unique="false" updatable="false"/>
+</joinColumns>
+</link>
+<link cardinality="ManyToOne" cascade="" fetch="DEFAULT" foreignKeyName="fk_organisateur_colloque" id="LINK_FK_fk_organisateur_colloque_O" inverseSideOf="" javaName="colloque" javaType="Colloque" joinTableName="" mappedBy="" optional="UNDEFINED" owningSide="true" sourceTableName="organisateur" targetEntity="Colloque" targetTableName="colloque" used="true">
+<joinColumns>
+<joinColumn insertable="false" name="colloque_id" nullable="true" referencedColumnName="id" unique="false" updatable="false"/>
+</joinColumns>
+</link>
+</table>
+<table catalog="colloque" databaseType="TABLE" javaBean="Participant" name="participant" schema="">
+<column dbAutoIncremented="true" dbComment="" dbDefaultValue="" dbName="id" dbNotNull="true" dbPosition="1" dbPrimaryKey="true" dbSize="10" dbTypeName="INT" inputType="number" javaName="id" javaType="java.lang.Integer" jdbcTypeCode="4" label="Id" notNull="true" selected="true"/>
+<column dbComment="" dbDefaultValue="" dbName="nom" dbNotNull="true" dbPosition="2" dbSize="255" dbTypeName="VARCHAR" inputType="text" javaName="nom" javaType="java.lang.String" jdbcTypeCode="12" label="Nom" maxLength="255" notEmpty="true" notNull="true" selected="true"/>
+<column dbComment="" dbDefaultValue="" dbName="prenom" dbNotNull="true" dbPosition="3" dbSize="255" dbTypeName="VARCHAR" inputType="text" javaName="prenom" javaType="java.lang.String" jdbcTypeCode="12" label="Prenom" maxLength="255" notEmpty="true" notNull="true" selected="true"/>
+<column dbComment="" dbDefaultValue="" dbName="numero_de_participation" dbNotNull="true" dbPosition="4" dbSize="5" dbTypeName="VARCHAR" inputType="text" javaName="numeroDeParticipation" javaType="java.lang.String" jdbcTypeCode="12" label="Numero de participation" maxLength="5" notEmpty="true" notNull="true" selected="true"/>
+<column dbComment="" dbDefaultValue="" dbName="adresse" dbNotNull="true" dbPosition="5" dbSize="255" dbTypeName="VARCHAR" inputType="text" javaName="adresse" javaType="java.lang.String" jdbcTypeCode="12" label="Adresse" maxLength="255" notEmpty="true" notNull="true" selected="true"/>
+<link cardinality="OneToMany" cascade="" fetch="DEFAULT" foreignKeyName="fk_organisateur_participant" id="LINK_FK_fk_organisateur_participant_I" inverseSideOf="LINK_FK_fk_organisateur_participant_O" javaName="listOfOrganisateur" javaType="java.util.List" joinTableName="" mappedBy="participant" optional="UNDEFINED" owningSide="false" sourceTableName="participant" targetEntity="Organisateur" targetTableName="organisateur" used="true"/>
+<link cardinality="OneToMany" cascade="" fetch="DEFAULT" foreignKeyName="fk_conferencier_participant" id="LINK_FK_fk_conferencier_participant_I" inverseSideOf="LINK_FK_fk_conferencier_participant_O" javaName="listOfConferencier" javaType="java.util.List" joinTableName="" mappedBy="participant" optional="UNDEFINED" owningSide="false" sourceTableName="participant" targetEntity="Conferencier" targetTableName="conferencier" used="true"/>
+<link cardinality="OneToMany" cascade="" fetch="DEFAULT" foreignKeyName="fk_inscription_participant" id="LINK_FK_fk_inscription_participant_I" inverseSideOf="LINK_FK_fk_inscription_participant_O" javaName="listOfInscription" javaType="java.util.List" joinTableName="" mappedBy="participant" optional="UNDEFINED" owningSide="false" sourceTableName="participant" targetEntity="Inscription" targetTableName="inscription" used="true"/>
+</table>
+<table catalog="colloque" databaseType="TABLE" javaBean="Presentation" name="presentation" schema="">
+<column dbAutoIncremented="true" dbComment="" dbDefaultValue="" dbName="id" dbNotNull="true" dbPosition="1" dbPrimaryKey="true" dbSize="10" dbTypeName="INT" inputType="number" javaName="id" javaType="java.lang.Integer" jdbcTypeCode="4" label="Id" notNull="true" selected="true"/>
+<column dbComment="" dbDefaultValue="" dbName="resumer" dbNotNull="true" dbPosition="2" dbSize="255" dbTypeName="VARCHAR" inputType="text" javaName="resumer" javaType="java.lang.String" jdbcTypeCode="12" label="Resumer" maxLength="255" notEmpty="true" notNull="true" selected="true"/>
+<column dbComment="" dbDefaultValue="" dbForeignKey="true" dbName="conferencier_id" dbNotNull="true" dbPosition="3" dbSize="10" dbTypeName="INT" inputType="number" javaName="conferencierId" javaType="java.lang.Integer" jdbcTypeCode="4" label="Conferencier id" notNull="true" selected="true"/>
+<column dbComment="" dbDefaultValue="" dbForeignKey="true" dbName="exposer_id" dbNotNull="true" dbPosition="4" dbSize="10" dbTypeName="INT" inputType="number" javaName="exposerId" javaType="java.lang.Integer" jdbcTypeCode="4" label="Exposer id" notNull="true" selected="true"/>
+<column dbComment="" dbDefaultValue="" dbForeignKey="true" dbName="colloque_id" dbNotNull="true" dbPosition="5" dbSize="10" dbTypeName="INT" inputType="number" javaName="colloqueId" javaType="java.lang.Integer" jdbcTypeCode="4" label="Colloque id" notNull="true" selected="true"/>
+<fk name="fk_conf_expo_coll-colloque">
+<fkcol colname="colloque_id" colref="id" deferrable="7" deleterule="3" sequence="1" tablename="presentation" tableref="colloque" updaterule="3"/>
+</fk>
+<fk name="fk_conf_expo_coll-conferencier">
+<fkcol colname="conferencier_id" colref="participant_id" deferrable="7" deleterule="3" sequence="1" tablename="presentation" tableref="conferencier" updaterule="3"/>
+</fk>
+<fk name="fk_conf_expo_coll-exposer">
+<fkcol colname="exposer_id" colref="id" deferrable="7" deleterule="3" sequence="1" tablename="presentation" tableref="exposer" updaterule="3"/>
+</fk>
+<link cardinality="ManyToOne" cascade="" fetch="DEFAULT" foreignKeyName="fk_conf_expo_coll-colloque" id="LINK_FK_fk_conf_expo_coll-colloque_O" inverseSideOf="" javaName="colloque" javaType="Colloque" joinTableName="" mappedBy="" optional="UNDEFINED" owningSide="true" sourceTableName="presentation" targetEntity="Colloque" targetTableName="colloque" used="true">
+<joinColumns>
+<joinColumn insertable="false" name="colloque_id" nullable="true" referencedColumnName="id" unique="false" updatable="false"/>
+</joinColumns>
+</link>
+<link cardinality="ManyToOne" cascade="" fetch="DEFAULT" foreignKeyName="fk_conf_expo_coll-conferencier" id="LINK_FK_fk_conf_expo_coll-conferencier_O" inverseSideOf="" javaName="conferencier" javaType="Conferencier" joinTableName="" mappedBy="" optional="UNDEFINED" owningSide="true" sourceTableName="presentation" targetEntity="Conferencier" targetTableName="conferencier" used="true">
+<joinColumns>
+<joinColumn insertable="false" name="conferencier_id" nullable="true" referencedColumnName="participant_id" unique="false" updatable="false"/>
+</joinColumns>
+</link>
+<link cardinality="ManyToOne" cascade="" fetch="DEFAULT" foreignKeyName="fk_conf_expo_coll-exposer" id="LINK_FK_fk_conf_expo_coll-exposer_O" inverseSideOf="" javaName="exposer" javaType="Exposer" joinTableName="" mappedBy="" optional="UNDEFINED" owningSide="true" sourceTableName="presentation" targetEntity="Exposer" targetTableName="exposer" used="true">
+<joinColumns>
+<joinColumn insertable="false" name="exposer_id" nullable="true" referencedColumnName="id" unique="false" updatable="false"/>
+</joinColumns>
+</link>
+</table>
+<table catalog="colloque" databaseType="TABLE" javaBean="Universite" name="universite" schema="">
+<column dbAutoIncremented="true" dbComment="" dbDefaultValue="" dbName="id" dbNotNull="true" dbPosition="1" dbPrimaryKey="true" dbSize="10" dbTypeName="INT" inputType="number" javaName="id" javaType="java.lang.Integer" jdbcTypeCode="4" label="Id" notNull="true" selected="true"/>
+<column dbComment="" dbDefaultValue="" dbName="nom" dbNotNull="true" dbPosition="2" dbSize="255" dbTypeName="VARCHAR" inputType="text" javaName="nom" javaType="java.lang.String" jdbcTypeCode="12" label="Nom" maxLength="255" notEmpty="true" notNull="true" selected="true"/>
+<column dbComment="" dbDefaultValue="" dbName="adresse" dbNotNull="true" dbPosition="3" dbSize="255" dbTypeName="VARCHAR" inputType="text" javaName="adresse" javaType="java.lang.String" jdbcTypeCode="12" label="Adresse" maxLength="255" notEmpty="true" notNull="true" selected="true"/>
+<link cardinality="OneToMany" cascade="" fetch="DEFAULT" foreignKeyName="fk_colloque_universite" id="LINK_FK_fk_colloque_universite_I" inverseSideOf="LINK_FK_fk_colloque_universite_O" javaName="listOfColloque" javaType="java.util.List" joinTableName="" mappedBy="universite" optional="UNDEFINED" owningSide="false" sourceTableName="universite" targetEntity="Colloque" targetTableName="colloque" used="true"/>
+</table>
+</tableList>
+</root>

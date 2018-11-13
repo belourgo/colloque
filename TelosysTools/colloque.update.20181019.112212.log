@@ -1,0 +1,32 @@
+Update date : Fri Oct 19 11:22:12 GMT 2018
+ 
+ Table 'colloque' found in repository
+ . Column 'date' : Database type changed to DATE
+ . Column 'date' : JDBC type code changed to 91
+ . Column 'date' : Size changed to 10
+ . Column 'date' updated
+ (*) table 'colloque' updated : 1 change(s)
+ 
+ Table 'conferencier' found in repository
+ (=) table 'conferencier' unchanged
+ 
+ Table 'exposer' found in repository
+ (=) table 'exposer' unchanged
+ 
+ Table 'inscription' found in repository
+ (=) table 'inscription' unchanged
+ 
+ Table 'institution' found in repository
+ (=) table 'institution' unchanged
+ 
+ Table 'organisateur' found in repository
+ (=) table 'organisateur' unchanged
+ 
+ Table 'participant' found in repository
+ (=) table 'participant' unchanged
+ 
+ Table 'presentation' found in repository
+ (=) table 'presentation' unchanged
+ 
+ Table 'universite' found in repository
+ (=) table 'universite' unchanged
